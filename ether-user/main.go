@@ -141,6 +141,7 @@ func matchingKeys() bool {
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 
 	if !ok {
+		
 		fmt.Println("error casting public key to ECDSA")
 	}
 
