@@ -61,6 +61,10 @@ type Wallet struct {
 	Address    string
 }
 
+func SetupCheck() string {
+	return "Succesfully called the ether-user package"
+}
+
 func CreateEthWallet() {
 	newWallet := Wallet{}
 
