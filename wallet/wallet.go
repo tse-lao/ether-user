@@ -18,23 +18,15 @@ type Wallet struct {
 	Address    string
 }
 
-func check(e error) {
-	if e != nil {
-		fmt.Println("Error has been found here: ", e)
-		return
-	}
-}
-
 func CheckLoggedIn() bool {
 	if FileExists("/tmp/private") || FileExists("/tmp/public") || FileExists("/tmp/address") {
 		fmt.Println("All files exists and therefore we can start investigating")
 		//now we need to check if it all matches.
 		if MatchingKeys() {
-			fmt.Print("We have matching keys")
 			return true
 		}
-
-		return true
+		//TODO: Do something when the files are not matching.
+		return false
 	}
 	return false
 }
@@ -60,7 +52,6 @@ func MatchingKeys() bool {
 	storedPublicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
 
 	if hexutil.Encode(storedPublicKeyBytes) == hexutil.Encode(publicKeyBytes) {
-		fmt.Println("That is nice the private key and public key are corresponding.")
 		return true
 	}
 
@@ -72,10 +63,8 @@ func ReadFile(path string) []byte {
 
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Println("ERoor with reading the file")
+		fmt.Println("Error with reading the file")
 	}
-
-	fmt.Print(data)
 
 	return data
 }
@@ -90,12 +79,20 @@ func FileExists(path string) bool {
 
 func Login(privateKey string) Wallet {
 	response := Wallet{}
-	if len(privateKey) > 32 {
-		response.status = true
-		response.message = "Valid Private key, lets try to use it. "
-	} else {
-		response.message = "Your private key entered does not exists, or is invalid"
+
+	if !CheckLoggedIn() {
+		CreateEthWallet()
 		response.status = false
+		response.message = "We have created the files fro you. . "
+	} else {
+		response.status = false
+		response.message = "True, we read it all grom the files.  "
+
+		//TOOD
+
+		response.PrivateKey = hexutil.Encode(ReadFile("/tmp/private"))
+		response.PublicKey = hexutil.Encode(ReadFile("/tmp/public"))
+		response.Address = string(ReadFile("/tmp/address"))
 	}
 
 	return response
@@ -115,7 +112,6 @@ func CreateEthWallet() {
 	check(err)
 	privateKeyBytes := crypto.FromECDSA(privateKey)
 
-	fmt.Println("\nPrivate Key Bytes \n", hexutil.Encode(privateKeyBytes))
 	newWallet.PrivateKey = hexutil.Encode(privateKeyBytes)
 
 	//Create Public Key
@@ -128,7 +124,6 @@ func CreateEthWallet() {
 	}
 
 	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
-	fmt.Println("\n\nPublic key in bytes:\n", hexutil.Encode(publicKeyBytes))
 	newWallet.PublicKey = hexutil.Encode(publicKeyBytes)
 
 	//Create Address
@@ -159,4 +154,11 @@ func WriteFile(path string, data []byte) string {
 	check(err)
 
 	return "Succesfully added the file to the following directory:" + path
+}
+
+func check(e error) {
+	if e != nil {
+		fmt.Println("Error has been found here: ", e)
+		return
+	}
 }

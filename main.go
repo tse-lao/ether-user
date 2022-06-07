@@ -19,11 +19,10 @@ func main() {
 	readFile("/tmp/keys")
 	*/
 	//here we need to make sure that run afunction that checks if hte uesrs exist.
-	if !wallet.CheckLoggedIn() {
-		wallet.CreateEthWallet()
-	}
+	result := wallet.Login("1234567890-12345678901234567890-1234567890-")
 
-	loggedIn := wallet.CheckLoggedIn()
-	fmt.Println("User is logged in : ", loggedIn)
+	fmt.Println(result)
+	// loggedIn := wallet.CheckLoggedIn()
+	// fmt.Println("User is logged in : ", loggedIn)
 	//read file for testing
 }
