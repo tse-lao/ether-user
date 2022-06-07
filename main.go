@@ -23,15 +23,15 @@ func main() {
 	readFile("/tmp/keys")
 	*/
 	//here we need to make sure that run afunction that checks if hte uesrs exist.
-	if !alreadyLoggedIn() {
-		createEthWallet()
+	if !AlreadyLoggedIn() {
+		CreateEthWallet()
 	}
 
 	//read file for testing
 }
 
 // now we want some kind of function that can create a path, data to be written and store like a propper json file
-func writeFile(path string, data []byte) string {
+func WriteFile(path string, data []byte) string {
 	//this will return a string with the message.
 
 	fmt.Println("The directory is ", path)
@@ -44,7 +44,7 @@ func writeFile(path string, data []byte) string {
 	return "Succesfully added the file to the following directory:" + path
 }
 
-func readFile(path string) []byte {
+func ReadFile(path string) []byte {
 	//here we will read the file
 
 	data, err := ioutil.ReadFile(path)
@@ -61,7 +61,7 @@ type Wallet struct {
 	Address    string
 }
 
-func createEthWallet() {
+func CreateEthWallet() {
 	newWallet := Wallet{}
 
 	//Create private Key
@@ -98,13 +98,13 @@ func createEthWallet() {
 
 	// we will be writing them as bytes to store it correctl.y
 
-	writeFile("/tmp/public", publicKeyBytes)
-	writeFile("/tmp/private", privateKeyBytes)
-	writeFile("/tmp/address", []byte(address))
+	WriteFile("/tmp/public", publicKeyBytes)
+	WriteFile("/tmp/private", privateKeyBytes)
+	WriteFile("/tmp/address", []byte(address))
 
 }
 
-func fileExists(path string) bool {
+func FileExists(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -112,9 +112,9 @@ func fileExists(path string) bool {
 	return true
 }
 
-//Check if we are already logged in.
-func alreadyLoggedIn() bool {
-	if fileExists("/tmp/private") || fileExists("/tmp/public") || fileExists("/tmp/address") {
+//Cheack if we are already logged in.
+func AlreadyLoggedIn() bool {
+	if FileExists("/tmp/private") || FileExists("/tmp/public") || FileExists("/tmp/address") {
 		fmt.Println("All files exists and therefore we can start investigating")
 		//now we need to check if it all matches.
 		if matchingKeys() {
@@ -129,8 +129,8 @@ func alreadyLoggedIn() bool {
 
 func matchingKeys() bool {
 
-	privateKeyBytes := readFile("/tmp/private")
-	publicKeyBytes := readFile("/tmp/public")
+	privateKeyBytes := ReadFile("/tmp/private")
+	publicKeyBytes := ReadFile("/tmp/public")
 	//addressBytes := readFile("/tmp/address")
 
 	//we check if the privateKey is corresponding to the poublic bytes key
@@ -141,7 +141,7 @@ func matchingKeys() bool {
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 
 	if !ok {
-		
+
 		fmt.Println("error casting public key to ECDSA")
 	}
 
