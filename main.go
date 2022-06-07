@@ -1,4 +1,4 @@
-package ether_user
+package connectfastuser
 
 import (
 	"crypto/ecdsa"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/tse-lao/ether-user/wallet"
 )
 
 func check(e error) {
@@ -26,6 +27,8 @@ func main() {
 	if !AlreadyLoggedIn() {
 		CreateEthWallet()
 	}
+
+	wallet.CheckLoggedIn()
 
 	//read file for testing
 }
