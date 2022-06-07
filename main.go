@@ -1,4 +1,4 @@
-package connectfastuser
+package main
 
 import (
 	"crypto/ecdsa"
@@ -28,8 +28,8 @@ func main() {
 		CreateEthWallet()
 	}
 
-	wallet.CheckLoggedIn()
-
+	loggedIn := wallet.CheckLoggedIn()
+	fmt.Println("User is logged in : ", loggedIn)
 	//read file for testing
 }
 
