@@ -13,9 +13,16 @@ import (
 type Wallet struct {
 	status     bool
 	message    string
-	privateKey string
-	publicKey  string
-	address    string
+	PrivateKey string
+	PublicKey  string
+	Address    string
+}
+
+func check(e error) {
+	if e != nil {
+		fmt.Println("Error has been found here: ", e)
+		return
+	}
 }
 
 func CheckLoggedIn() bool {
@@ -97,4 +104,59 @@ func Login(privateKey string) Wallet {
 func ValidPrivateKey(privateKey string) bool {
 
 	return true
+}
+
+func CreateEthWallet() {
+	newWallet := Wallet{}
+
+	//Create private Key
+	privateKey, err := crypto.GenerateKey()
+
+	check(err)
+	privateKeyBytes := crypto.FromECDSA(privateKey)
+
+	fmt.Println("\nPrivate Key Bytes \n", hexutil.Encode(privateKeyBytes))
+	newWallet.PrivateKey = hexutil.Encode(privateKeyBytes)
+
+	//Create Public Key
+	publicKey := privateKey.Public()
+
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+
+	if !ok {
+		fmt.Println("error casting public key to ECDSA")
+	}
+
+	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
+	fmt.Println("\n\nPublic key in bytes:\n", hexutil.Encode(publicKeyBytes))
+	newWallet.PublicKey = hexutil.Encode(publicKeyBytes)
+
+	//Create Address
+	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
+	fmt.Println("\n\nAddress:\n", address)
+
+	newWallet.Address = address
+
+	fmt.Println("\n\n", newWallet)
+
+	//now we write all the files to towards the system to check if they exists and correspond.
+
+	// we will be writing them as bytes to store it correctl.y
+
+	WriteFile("/tmp/public", publicKeyBytes)
+	WriteFile("/tmp/private", privateKeyBytes)
+	WriteFile("/tmp/address", []byte(address))
+
+}
+func WriteFile(path string, data []byte) string {
+	//this will return a string with the message.
+
+	fmt.Println("The directory is ", path)
+	fmt.Println("The data to bes stored is ", data)
+
+	//here we write the file and the path.
+	err := os.WriteFile(path, data, 0644)
+	check(err)
+
+	return "Succesfully added the file to the following directory:" + path
 }
