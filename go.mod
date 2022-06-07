@@ -1,4 +1,4 @@
-module github.com/lao.tse/ether-user
+module github.com/lao-tse/ether-user
 
 go 1.18
 
