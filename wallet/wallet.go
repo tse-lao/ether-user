@@ -16,6 +16,7 @@ type Wallet struct {
 	PrivateKey string
 	PublicKey  string
 	Address    string
+	path       string
 }
 
 func CheckLoggedIn() bool {
