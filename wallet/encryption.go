@@ -60,12 +60,13 @@ func importKs() {
 	}
 }
 
-func GetAccount(file string, password string) {
+func GetAccount(file string, password string) Wallet {
 	b, err := ioutil.ReadFile(file)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+	returnWallet := Wallet{}
 
 	key, err := keystore.DecryptKey(b, password)
 
@@ -73,14 +74,21 @@ func GetAccount(file string, password string) {
 
 	fmt.Println("Print PRIVATE KEY:: ")
 	fmt.Println(hexutil.Encode(pData))
-
+	returnWallet.PrivateKey = hexutil.Encode(pData)
 	fmt.Println("\n Print PUBLIC_KEY::")
 
 	pData = crypto.FromECDSAPub(&key.PrivateKey.PublicKey)
 	fmt.Println(hexutil.Encode(pData))
+	returnWallet.PublicKey = hexutil.Encode(pData)
 
 	address := crypto.PubkeyToAddress(key.PrivateKey.PublicKey)
 	fmt.Println("\n\nAddress:\n", address)
 	fmt.Println("\n Finishing all the private key data and stuff. ")
+
+	returnWallet.message = "We successfully retrieved your account"
+	returnWallet.status = true
+	returnWallet.Address = address
+
+	return returnWallet
 
 }
