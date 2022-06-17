@@ -14,6 +14,11 @@ func check(e error) {
 }
 
 func main() {
+	data := []byte("something")
+	wallet.EncryptData(data)
+}
+
+func checking() {
 
 	fmt.Println("== STARTING NEW ACCOUNT CREATION! ==")
 
@@ -23,7 +28,9 @@ func main() {
 
 	filePath := "./wallets/UTC--2022-06-12T08-10-20.631620000Z--36799a0a2e657721be34a92ff2e74c7261ee735f"
 
-	wallet.GetAccount(filePath, "testing")
+	info := wallet.GetAccount(filePath, "testing")
+
+	fmt.Println(info)
 	/* d1 := []byte("Hello, world\n")
 	writeFile("/tmp/keys", d1)
 	readFile("/tmp/keys")
