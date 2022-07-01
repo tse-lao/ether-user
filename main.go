@@ -14,22 +14,31 @@ func check(e error) {
 }
 
 func main() {
-	data := []byte("something")
-	wallet.EncryptData(data)
+	//initializing
+	//wallet.CreateNewAccount("somepassword")
+	//wallet.GetPrivateKey("somepassword")
+
+	//[] Make sure that we get the public key correctly.
+
+	publicKey := wallet.GetPublicKey("somepassword")
+
+	fmt.Println(publicKey)
+	data := []byte("encrypt this data please")
+
+	fmt.Println("We encrypted data below with public key: \n\n ")
+	encrypted := wallet.EncryptWithPublicKey(publicKey, data)
+
+	fmt.Println("We descrypted with private key: \n\n ")
+	wallet.DecryptWithPrivateKey("somepassword", encrypted)
 }
 
 func checking() {
 
 	fmt.Println("== STARTING NEW ACCOUNT CREATION! ==")
-
 	//wallet.CreateNewAccount("testing")
-
 	fmt.Println("== GETTING ALL THEW DETAILS ABOUT THE WALLET ==")
-
 	filePath := "./wallets/UTC--2022-06-12T08-10-20.631620000Z--36799a0a2e657721be34a92ff2e74c7261ee735f"
-
 	info := wallet.GetAccount(filePath, "testing")
-
 	fmt.Println(info)
 	/* d1 := []byte("Hello, world\n")
 	writeFile("/tmp/keys", d1)

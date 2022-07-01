@@ -1,6 +1,54 @@
+// SPDX-License-Identifier: GPL-3.0
+
 pragma solidity ^0.8.6;
 
-contract ShareFile {
+contract Contracts{
+    address[] public pool;
+    address tokenAddress;
+    string public name;
+    string private link; 
+    address public owner;
+    
+    
+    constructor(address _tokenAddress, string memory _name, string memory _link){
+        owner = msg.sender;
+        tokenAddress = _tokenAddress;
+        name = _name;
+        link = _link;
+        //we would like it to have a IPFS link. 
+    }
+    
+    function updateInfo(string memory _name, string memory _link) public {
+        require(msg.sender == owner, "Only owner can update info");
+        name = _name;
+        link = _link;
+    }
+
+    //this needs to be changed for now. 
+    function CreateNewContract(string memory _url, string memory _metadata, uint _minFee) public returns (address){
+        //we need to create something so we can invoke a new contract. 
+         ShareContract a = new ShareContract(_url, _metadata, _minFee, msg.sender);
+         pool.push(address(a));
+         return address(a);
+    }
+    
+    function contractSettings(string memory _link) private{
+        link = _link;
+        
+    }
+    
+    function getSettings() public view returns (string memory) {
+        require(msg.sender == owner, "You need to be owner to view this");
+        return link;
+    } 
+    
+    function countContracts() public view returns(uint){
+        return pool.length;
+    }
+    
+}
+contract ShareContract {
+    //public variables.
     address public owner;
     address public createdBy;
     string public url;
@@ -30,7 +78,8 @@ contract ShareFile {
         
     }
 
-    modifier isOwner() {
+    
+     modifier isOwner() {
         require(msg.sender == owner, "Permission denied! Only owner");
         
         _;
