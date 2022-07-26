@@ -117,7 +117,7 @@ func GetAccount(file string, password string) Wallet {
 func RetrievePrivateKey(address []byte, password string) *keystore.Key {
 	//byte[] ass argument.
 	//this is not possible
-	key, err := keystore.DecryptKey(filePath, password)
+	key, err := keystore.DecryptKey(address, password)
 
 	if err != nil {
 		fmt.Println("We have and")
@@ -163,7 +163,7 @@ func GetPrivateKey(password string) *ecdsa.PrivateKey {
 	//this is not possible.,
 	file := RetrieveWalletFile()
 
-	b, err := ioutil.ReadFile(file)
+	b, err := ioutil.ReadFile(file.Message)
 
 	if err != nil {
 		log.Fatal(err)
@@ -182,7 +182,7 @@ func GetPrivateKey(password string) *ecdsa.PrivateKey {
 
 func GetPublicKey(password string) *ecdsa.PublicKey {
 	file := RetrieveWalletFile()
-	b, err := ioutil.ReadFile(file)
+	b, err := ioutil.ReadFile(file.Message)
 
 	if err != nil {
 		log.Fatal(err)
@@ -212,7 +212,7 @@ func RetrieveWalletFile() Notification {
 		note.Status = false
 		note.Message = "Unable to read the file "
 	}
-	note.Data = "path: " + filePath + files[0].Name() + ""
+	note.Message = "path: " + filePath + files[0].Name() + ""
 	note.Status = true
 	return note
 }
