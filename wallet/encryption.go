@@ -14,11 +14,11 @@ import (
 	"github.com/ethereum/go-ethereum/crypto/ecies"
 )
 
-var address = "./keystore/"
+var filePath = "./keystore/"
 
 func CreateKeyStore() *keystore.KeyStore {
 	//check if there is a keystore available.
-	ks := keystore.NewKeyStore(address, keystore.StandardScryptN, keystore.StandardScryptP)
+	ks := keystore.NewKeyStore(filePath, keystore.StandardScryptN, keystore.StandardScryptP)
 
 	return ks
 }
@@ -75,14 +75,23 @@ func importKs() {
 }
 
 func GetAccount(file string, password string) Wallet {
+	returnWallet := Wallet{}
+
 	b, err := ioutil.ReadFile(file)
 
 	if err != nil {
 		log.Fatal(err)
+		returnWallet.Status = false
+		returnWallet.Message = "An error occured when searching for the file.. "
 	}
-	returnWallet := Wallet{}
 
 	key, err := keystore.DecryptKey(b, password)
+
+	if err != nil {
+		log.Fatal(err)
+		returnWallet.Status = false
+		returnWallet.Message = "Your password is incorrect!, or another error occured"
+	}
 
 	pData := crypto.FromECDSA(key.PrivateKey)
 
@@ -97,8 +106,8 @@ func GetAccount(file string, password string) Wallet {
 	address := crypto.PubkeyToAddress(key.PrivateKey.PublicKey)
 	fmt.Println("\n\nAddress:\n", address.String())
 
-	returnWallet.message = "We successfully retrieved your account"
-	returnWallet.status = true
+	returnWallet.Message = "We successfully retrieved your account"
+	returnWallet.Status = true
 	returnWallet.Address = address.String()
 
 	return returnWallet
@@ -108,7 +117,7 @@ func GetAccount(file string, password string) Wallet {
 func RetrievePrivateKey(address []byte, password string) *keystore.Key {
 	//byte[] ass argument.
 	//this is not possible
-	key, err := keystore.DecryptKey(address, password)
+	key, err := keystore.DecryptKey(filePath, password)
 
 	if err != nil {
 		fmt.Println("We have and")
@@ -194,13 +203,18 @@ func GetPublicKey(password string) *ecdsa.PublicKey {
 	return &key.PrivateKey.PublicKey
 }
 
-func RetrieveWalletFile() string {
-	files, err := ioutil.ReadDir(address)
+func RetrieveWalletFile() Notification {
+	note := Notification{}
+	files, err := ioutil.ReadDir(filePath)
 
 	if err != nil {
 		log.Fatal("Unable to read the file", err)
+		note.Status = false
+		note.Message = "Unable to read the file "
 	}
-	return address + files[0].Name()
+	note.Data = "path: " + filePath + files[0].Name() + ""
+	note.Status = true
+	return note
 }
 
 //TODO: create function that verifies that this is the sender of the data.

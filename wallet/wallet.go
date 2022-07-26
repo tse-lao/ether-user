@@ -11,12 +11,18 @@ import (
 )
 
 type Wallet struct {
-	status     bool
-	message    string
-	PrivateKey string
-	PublicKey  string
-	Address    string
-	path       string
+	Status     bool   `json:"status"`
+	Message    string `json:"message"`
+	PrivateKey string `json:"private_key"`
+	PublicKey  string `json:"public_key"`
+	Address    string `json:"address"`
+	Path       string `json:"path"`
+}
+
+type Notification struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+	Data    string `json:"data"`
 }
 
 func CheckLoggedIn() bool {
@@ -83,11 +89,11 @@ func Login(privateKey string) Wallet {
 
 	if !CheckLoggedIn() {
 		CreateEthWallet()
-		response.status = false
-		response.message = "We have created the files fro you. . "
+		response.Status = false
+		response.Message = "We have created the files fro you. . "
 	} else {
-		response.status = false
-		response.message = "True, we read it all grom the files.  "
+		response.Status = false
+		response.Message = "True, we read it all from the files.  "
 
 		//TOOD
 

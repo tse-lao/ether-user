@@ -9,13 +9,11 @@ contract Contracts{
     string private link; 
     address public owner;
     
-    
     constructor(address _tokenAddress, string memory _name, string memory _link){
         owner = msg.sender;
         tokenAddress = _tokenAddress;
         name = _name;
         link = _link;
-        //we would like it to have a IPFS link. 
     }
     
     function updateInfo(string memory _name, string memory _link) public {
@@ -24,9 +22,7 @@ contract Contracts{
         link = _link;
     }
 
-    //this needs to be changed for now. 
-    function CreateNewContract(string memory _url, string memory _metadata, uint _minFee) public returns (address){
-        //we need to create something so we can invoke a new contract. 
+    function CreateNewContract(string memory _url, string memory _metadata, uint _minFee) public returns (address){. 
          ShareContract a = new ShareContract(_url, _metadata, _minFee, msg.sender);
          pool.push(address(a));
          return address(a);
@@ -45,8 +41,8 @@ contract Contracts{
     function countContracts() public view returns(uint){
         return pool.length;
     }
-    
 }
+
 contract ShareContract {
     //public variables.
     address public owner;
@@ -74,14 +70,12 @@ contract ShareContract {
         createdBy = msg.sender;
         url = _url;
         fee = _minFee;
-        metadata = _metadata;
-        
+        metadata = _metadata;   
     }
 
     
      modifier isOwner() {
         require(msg.sender == owner, "Permission denied! Only owner");
-        
         _;
     }
 
