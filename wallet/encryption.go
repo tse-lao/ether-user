@@ -139,7 +139,7 @@ func EncryptData(data []byte) Notification {
 	if err != nil {
 
 		message.Status = false
-		message.Message = err
+		message.Message = "error in this encrypting message."
 	}
 
 	fmt.Println(hexutil.Encode(signature))
