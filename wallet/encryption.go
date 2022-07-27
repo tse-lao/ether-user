@@ -208,6 +208,9 @@ func GetPublicKey(password string) *ecdsa.PublicKey {
 
 func RetrieveWalletFile() Notification {
 	note := Notification{}
+
+	//check if it exists if not return 0
+
 	files, err := ioutil.ReadDir(filePath)
 
 	if err != nil {
@@ -255,4 +258,15 @@ func DecryptWithPrivateKey(password string, data []byte) []byte {
 	fmt.Println(string(result))
 
 	return result
+}
+
+func DirExists() (bool, error) {
+	_, err := os.Stat(filePath)
+	if err == nil {
+		return false, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
