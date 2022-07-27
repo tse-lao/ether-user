@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
@@ -31,7 +30,7 @@ func CreateNewAccount(password string) string {
 	//create a new account here,
 	account, err := ks.NewAccount(password)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	fmt.Println(account.Address)
@@ -58,19 +57,19 @@ func importKs() {
 	jsonBytes, err := ioutil.ReadFile(file)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	password := "secret"
 	account, err := ks.Import(jsonBytes, password, password)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	fmt.Println(account.Address.Hex()) // 0x20F8D42FB0F667F2E53930fed426f225752453b3
 
 	if err := os.Remove(file); err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 }
 
@@ -80,7 +79,6 @@ func GetAccount(file string, password string) Wallet {
 	b, err := ioutil.ReadFile(file)
 
 	if err != nil {
-		log.Fatal(err)
 		returnWallet.Status = false
 		returnWallet.Message = "An error occured when searching for the file.. "
 	}
@@ -88,7 +86,6 @@ func GetAccount(file string, password string) Wallet {
 	key, err := keystore.DecryptKey(b, password)
 
 	if err != nil {
-		log.Fatal(err)
 		returnWallet.Status = false
 		returnWallet.Message = "Your password is incorrect!, or another error occured"
 	}
@@ -129,8 +126,8 @@ func RetrievePrivateKey(address []byte, password string) *keystore.Key {
 	return key
 
 }
-func EncryptData(data []byte) {
-
+func EncryptData(data []byte) Notification {
+	message := Notification{}
 	hash := crypto.Keccak256Hash(data)
 
 	fmt.Println(hash.Hex())
@@ -140,7 +137,9 @@ func EncryptData(data []byte) {
 	signature, err := crypto.Sign(hash.Bytes(), privateKey)
 
 	if err != nil {
-		log.Fatal(err)
+
+		message.Status = false
+		message.Message = err
 	}
 
 	fmt.Println(hexutil.Encode(signature))
@@ -153,6 +152,10 @@ func EncryptData(data []byte) {
 	fmt.Println(publicKey)
 
 	EncryptWithPublicKey(publicKey, data)
+	message.Status = true
+	message.Message = "Succesfully encrypted"
+
+	return message
 }
 
 //behind the back gathering of privatekey.
@@ -166,7 +169,7 @@ func GetPrivateKey(password string) *ecdsa.PrivateKey {
 	b, err := ioutil.ReadFile(file.Message)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	key, err := keystore.DecryptKey(b, password)
@@ -185,7 +188,7 @@ func GetPublicKey(password string) *ecdsa.PublicKey {
 	b, err := ioutil.ReadFile(file.Message)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	returnWallet := Wallet{}
 
@@ -208,9 +211,9 @@ func RetrieveWalletFile() Notification {
 	files, err := ioutil.ReadDir(filePath)
 
 	if err != nil {
-		log.Fatal("Unable to read the file", err)
 		note.Status = false
-		note.Message = "Unable to read the file "
+		note.Message = "Unable to read the file \n"
+
 	}
 	note.Message = "path: " + filePath + files[0].Name() + ""
 	note.Status = true
