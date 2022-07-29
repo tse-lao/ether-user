@@ -81,9 +81,13 @@ func importKs() {
 func GetAccount(password string) Wallet {
 	returnWallet := Wallet{}
 
-	b, err := ioutil.ReadFile(filePath)
+	result := RetrieveWalletFile().Message
+	b, err := ioutil.ReadFile(result)
+
+	fmt.Println("reading the file")
 
 	if err != nil {
+		fmt.Println(err)
 		returnWallet.Status = false
 		returnWallet.Message = "An error occured when searching for the file.. "
 	}
@@ -91,6 +95,7 @@ func GetAccount(password string) Wallet {
 	key, err := keystore.DecryptKey(b, password)
 
 	if err != nil {
+		fmt.Println(err)
 		returnWallet.Status = false
 		returnWallet.Message = "Your password is incorrect!, or another error occured"
 	}
@@ -223,7 +228,7 @@ func RetrieveWalletFile() Notification {
 		note.Message = "Unable to read the file \n"
 
 	}
-	note.Message = "path: " + filePath + files[0].Name() + ""
+	note.Message = "" + filePath + files[0].Name() + ""
 	note.Status = true
 	return note
 }
