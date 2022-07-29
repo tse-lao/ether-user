@@ -18,31 +18,36 @@ var filePath = "./keystore/"
 func CreateKeyStore() *keystore.KeyStore {
 	//check if there is a keystore available.
 	ks := keystore.NewKeyStore(filePath, keystore.StandardScryptN, keystore.StandardScryptP)
-
 	return ks
 }
 
 //this creates something new.
-func CreateNewAccount(password string) string {
+func CreateNewAccount(password string) Notification {
 
+	result := Notification{}
 	ks := CreateKeyStore()
 	//check ENVIRONMENT.
 	//create a new account here,
 	account, err := ks.NewAccount(password)
 	if err != nil {
 		fmt.Println(err)
+		result.Status = false
+		result.Message = "Error with creating an account"
 	}
 
-	fmt.Println(account.Address)
-	result := ks.Wallets()
+	//account.Address will give the result of the address.
 
-	fmt.Println("Wallets")
-	fmt.Println(result)
+	wallets := ks.Wallets()
 
-	return account.Address.String()
+	fmt.Println(wallets)
+
+	result.Status = true
+	result.Data = account.Address.String()
+
+	return result
 }
 
-//GEt aLL tHe acCOunts
+//GET ALL ACCOUNTS in your system.
 func GetAccounts() interface{} {
 	fmt.Print("Not working yet, need to implement a retrieval process of the saving.")
 	ks := CreateKeyStore()
@@ -73,10 +78,10 @@ func importKs() {
 	}
 }
 
-func GetAccount(file string, password string) Wallet {
+func GetAccount(password string) Wallet {
 	returnWallet := Wallet{}
 
-	b, err := ioutil.ReadFile(file)
+	b, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
 		returnWallet.Status = false
