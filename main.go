@@ -22,7 +22,7 @@ func main() {
 
 	//wallet.CreateNewAccount("password")
 
-	result := wallet.GetAccount("password")
+	result := wallet.EthConnect()
 
 	fmt.Println(result)
 }

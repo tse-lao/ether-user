@@ -22,7 +22,7 @@ contract Contracts{
         link = _link;
     }
 
-    function CreateNewContract(string memory _url, string memory _metadata, uint _minFee) public returns (address){. 
+    function CreateNewContract(string memory _url, string memory _metadata, uint _minFee) public returns (address){
          ShareContract a = new ShareContract(_url, _metadata, _minFee, msg.sender);
          pool.push(address(a));
          return address(a);
